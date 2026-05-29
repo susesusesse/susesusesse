@@ -1,0 +1,766 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* --- WORK PAGE --- */
+
+.work-page-body {
+    height: auto;
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.work-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+
+    padding-top: 70px;
+    box-sizing: border-box;
+}
+
+.work-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    line-height: 0.78;
+    padding-bottom: 40px;
+}
+
+.work-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    gap: 2rem;
+
+    text-decoration: none;
+    color: #000;
+
+    font-size: clamp(4rem, 8vw, 8.5rem);
+    font-weight: 350;
+    letter-spacing: -0.08em;
+
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.work-title {
+    width: fit-content;
+}
+
+.work-year {
+    text-align: right;
+    letter-spacing: -0.08em;
+}
+
+.work-list:has(.work-item:hover) .work-item:not(:hover) {
+    opacity: 0.25;
+}
+
+.work-item:hover {
+    transform: translateX(16px);
+}
+
+body {
+    background-color: #D4D4D4;
+    color: #000000;
+    font-family: 'Archivo', sans-serif;
+    height: 100vh;
+    overflow: hidden;
+
+    padding: 0.3vh 0.3vw;
+
+    cursor: default;
+
+    display: flex;
+    flex-direction: column;
+}
+
+/* Sobrescribe el body global solo en la página WORK */
+body.work-page-body {
+    height: auto;
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.work-detail-page {
+    min-height: 100vh;
+    height: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+
+/* --- EFECTO DE RUIDO --- */
+.noise-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 9999; opacity: 0.06;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* --- CONTENEDOR FLOTANTE --- */
+.cursor-image-container {
+    position: fixed;
+    top: 0; left: 0; width: 350px; height: 450px;
+    z-index: -1; pointer-events: none; opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+    transition: opacity 0.3s ease, transform 0.5s ease-out;
+    overflow: hidden; border-radius: 4px;
+}
+.cursor-image-container.visible { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+
+#floating-image, #floating-video {
+    width: 100%; height: 100%; object-fit: cover;
+    position: absolute; top: 0; left: 0;
+    filter: grayscale(100%) contrast(1.1);
+    display: none;
+}
+.is-active { display: block !important; }
+
+/* --- HEADER --- */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    margin-bottom: 0;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+
+    height: 60px;
+    background-color: #D4D4D4;
+    padding: 0.3vh 0.3vw;
+}
+.logo {
+    /* Tamaño base más pequeño, porque luego lo multiplicamos por 2 */
+    font-size: 1.8rem; 
+    font-weight: 400;
+    line-height: 0.5;
+    
+    color: #4a4a4a;
+    letter-spacing: -0.05em;
+    
+    /* --- AQUÍ ESTÁ LA SOLUCIÓN --- */
+    /* Poner los dos números juntos separados por coma */
+    /* scale(ANCHO, ALTO) */
+    transform: scale(2.5, 3); 
+    
+    /* Importante: que crezca desde la esquina superior izquierda */
+    transform-origin: left top; 
+    
+    /* Necesario para que el navegador calcule bien el espacio */
+    display: inline-block; 
+    margin-bottom: 0.5rem; /* Un poco de aire extra abajo */
+}
+
+.logo a:hover { color: #000; }
+
+.meta-info {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    flex-shrink: 0;
+
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    padding-top: 5px;
+    text-align: right;
+    margin-right: 10px;
+
+    white-space: nowrap;
+}
+
+/* --- GRID PRINCIPAL --- */
+.grid-container {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 450px;
+    column-gap: 4rem;
+
+    flex-grow: 1;
+    align-items: start;
+    position: relative;
+    z-index: 20;
+
+    padding-top: 22vh;
+    padding-right: clamp(10px, 4vw, 20px);
+    box-sizing: border-box;
+}
+/* --- MENÚ GIGANTE (IZQUIERDA) --- */
+.big-menu {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2rem;
+    justify-content: flex-end; /* Pegar los items abajo */
+    line-height: 0.80; /* Muy pegado verticalmente */
+    
+    /* Aseguramos que el contenedor toque el fondo del grid */
+    height: 100%; 
+}
+
+.menu-item {
+    text-decoration: none;
+    color: #000000;
+    font-weight: 350;
+    font-size: 33vh;
+    letter-spacing: -0.09em;
+    margin-left: -0.01em;
+    margin-bottom: -1rem;
+
+    display: block;
+    width: fit-content;
+    line-height: 0.8;
+
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    transform-origin: left center;
+    cursor: pointer;
+    mix-blend-mode: multiply;
+}
+
+.menu-item:hover {
+    transform: scale(1.02) translateX(20px);
+    opacity: 1;
+}
+
+/* Solo se activa cuando estás encima de una palabra real */
+.big-menu:has(.menu-item:hover) .menu-item:not(:hover) {
+    opacity: 0.3;
+}
+
+/* --- BIO (DERECHA) --- */
+.bio-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    font-weight: 300;
+    font-size: 20px;
+    letter-spacing: -0.04em;
+    line-height: 1.2;
+
+    justify-content: flex-start;
+
+    width: 450px;
+    max-width: 450px;
+
+    padding-left: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    margin-top: 1vh;
+    height: auto;
+    align-self: start;
+}   
+
+.bio-container p {
+    max-width: 450px;
+    text-align: justify;
+    hyphens: auto;
+}
+
+.email-link {
+    color: #000000;
+    text-decoration: underline;
+    font-weight: 400;
+}
+
+/* TSUKARETA -------------------------------------------------*/ 
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+
+.frame {
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+  align-items: flex-start;
+  justify-content: space-between;
+  position: relative;
+}
+
+.frame .tsukareta-fotolibro-wrapper {
+    position: sticky;
+    top: 58px;
+
+    width: 437px;
+    z-index: 80;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 10px;
+    padding: 10px;
+}
+
+.frame .tsukareta-fotolibro {
+  position: relative;
+  align-self: stretch;
+  margin-top: -1px;
+  font-weight: 300;
+  color: #000000;
+  font-size: 20px;
+  letter-spacing: -1px;
+  line-height: normal;
+}
+
+.frame .text-wrapper {
+  letter-spacing: -0.2px;
+}
+
+.frame .span {
+  letter-spacing: -0.2px;
+  text-decoration: underline;
+}
+
+
+.frame .div {
+  flex-direction: column;
+  width: 48vw;
+  max-width: 917px;
+  align-items: flex-start;
+  display: flex;
+  position: relative;
+}
+.frame .tsukareta {
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.frame .img {
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.frame .tsukareta-2 {
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.frame .div-2 {
+  align-items: center;
+  align-self: stretch;
+  width: 100%;
+  display: flex;
+  position: relative;
+}
+.frame .tsukareta-3 {
+  position: relative;
+  width: 50%;
+  height: auto;
+  display: block;
+}
+.frame .tsukareta-4 {
+  position: relative;
+  width: 50%;
+  height: auto;
+  display: block;
+}
+.frame .tsukareta-5 {
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  height: auto;
+  display: block;
+}
+@media screen and (max-width: 900px) {
+    .frame {
+        width: 100%;
+        max-width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .frame .tsukareta-fotolibro-wrapper {
+        position: relative;
+        top: auto;
+        left: auto;
+        width: 100%;
+        padding: 0 10px 2rem 10px;
+        z-index: 1;
+    }
+
+    .frame .div,
+    .frame .div-2 {
+        margin-left: 0;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .frame .div img,
+    .frame .div-2 img {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .frame .div-2 {
+        flex-direction: column;
+    }
+
+    .frame .tsukareta-3,
+    .frame .tsukareta-4 {
+        width: 100%;
+        height: auto;
+    }
+}
+
+/* TRUE666HATE -------------------------------------------------*/ 
+
+.work-detail-page {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+.frame {
+    display: flex;
+    width: 100%;
+    max-width: 100%;
+    align-items: flex-start;
+    justify-content: space-between;
+    position: relative;
+
+    padding-top: 58px;
+}
+
+.project-info {
+    position: sticky;
+    top: 58px;
+
+    width: 437px;
+    z-index: 80;
+
+    padding: 10px;
+}
+
+.project-info p {
+    margin: 0;
+    font-weight: 300;
+    color: #000;
+    font-size: 20px;
+    letter-spacing:-1px;
+    line-height: normal;
+}
+
+.subrayado {
+    text-decoration: underline;
+}
+
+.project-images {
+    display: flex;
+    flex-direction: column;
+    width: 48vw;
+    max-width: 917px;
+}
+
+.project-images img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+@media screen and (max-width: 900px) {
+    .frame {
+        flex-direction: column;
+        padding-top: 58px;
+    }
+
+    .project-info {
+        position: relative;
+        top: auto;
+        width: 100%;
+        padding: 0 10px 2rem 10px;
+    }
+
+    .project-images {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .project-images img {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ==================================================================================
+   VERSION MÓVIL (RESPONSIVE) - CORREGIDA
+   Se activa solo si la pantalla es menor de 768px
+   ================================================================================== */
+@media screen and (max-width: 768px) {
+
+    /* 1. Permitir scroll en móvil */
+    body {
+        height: auto;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 0;
+        display: block;
+    }
+
+header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    width: 100%;
+    height: auto;
+    margin-bottom: 0;
+
+    padding-left: 10px;
+    padding-right: 10px;
+    box-sizing: border-box;
+
+    background-color: #D4D4D4;
+}
+
+.logo {
+    font-size: 10vw;
+    line-height: 0.6;
+    transform: scale(0.9, 1.1);
+    transform-origin: left top;
+
+    margin-left: 0;
+    margin-bottom: 12px;
+    letter-spacing: -0.05em;
+
+    max-width: 100%;
+    display: block;
+    flex-shrink: 1;
+}
+
+.meta-info {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: flex-start;
+
+    width: auto;
+    gap: 10px;
+    margin-top: 0;
+    margin-right: 0;
+    padding-top: 5px;
+
+    font-size: 0.9rem;
+    text-align: right;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+    /* 3. Grid home */
+    .grid-container {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    gap: 3rem;
+
+    padding-top: 80px;   /* baja el menú para que no lo pise el header */
+    padding-left: 10px;  /* mismo margen que el header */
+    padding-right: 10px; /* mismo margen que el header */
+    box-sizing: border-box;
+}
+
+    /* 4. Menú gigante home */
+    .big-menu {
+        width: 100%;
+        line-height: 0.9;
+    }
+
+    .menu-item {
+        font-size: 23vw;
+        margin-left: -0.05em;
+        margin-bottom: 0;
+    }
+
+    .menu-item:active {
+        opacity: 0.5;
+        transform: scale(0.98);
+    }
+
+    /* 5. Bio home */
+    .bio-container {
+        padding: 0;
+        padding-bottom: 4rem;
+        justify-content: flex-start;
+    }
+
+    .bio-container p {
+        max-width: 100%;
+        font-size: 4vw;
+        line-height: 1.2;
+        font-weight: 100;
+        text-align: left;
+    }
+
+    .email-link {
+        max-width: 100%;
+        font-size: 4vw;
+        line-height: 1.2;
+        font-weight: 100;
+        text-align: left;
+}
+
+    .intro {
+        font-size: 1.4rem;
+        font-weight: 300;
+        margin-bottom: 1rem;
+    }
+
+    /* 6. Desactivar efectos de ratón */
+    .cursor-image-container {
+        display: none !important;
+    }
+
+    /* 7. Página WORK */
+    .work-page {
+        min-height: auto;
+        padding-top: 80px; /* separa la lista del header fijo */
+        padding-left: 10px;  /* mismo margen que la home/header */
+        padding-right: 10px;
+        box-sizing: border-box;
+        align-items:flex-start;
+    }
+
+    .work-item {
+        font-size: 10vw;
+        font-weight:100;
+        gap: 1rem;
+        line-height: 0.9;
+    }
+
+    /* 8. Páginas de proyecto */
+    .work-detail-page {
+        padding: 0;
+    }
+
+    .work-detail-page header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+
+        width: 100%;
+        height: auto;
+        margin-bottom: 0;
+
+        padding-left: 10px;
+        padding-right: 10px;
+        box-sizing: border-box;
+    }
+
+    .work-detail-page .logo {
+        font-size: 10vw;
+        line-height: 0.6;
+        flex-shrink: 1;
+        margin-bottom: 12px;
+    }
+
+    .work-detail-page .meta-info {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-items: flex-start;
+
+        width: auto;
+        gap: 10px;
+        margin-top: 0;
+        margin-right: 0;
+        padding-top: 5px;
+
+        font-size: 0.9rem;
+        text-align: right;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    .work-detail-page .frame {
+        width: 100%;
+        max-width: 100%;
+        display: flex;
+        flex-direction: column;
+        padding-top: 80px;
+        margin: 0;
+    }
+
+    .work-detail-page .project-info,
+    .work-detail-page .frame .tsukareta-fotolibro-wrapper {
+        position: relative;
+        top: auto;
+        left: auto;
+
+        width: 100%;
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-bottom: 2rem;
+        box-sizing: border-box;
+        z-index: 1;
+    }
+
+    .work-detail-page .project-images,
+    .work-detail-page .frame .div,
+    .work-detail-page .frame .div-2 {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .work-detail-page .project-images img,
+    .work-detail-page .frame .div img,
+    .work-detail-page .frame .div-2 img {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 0;
+        padding: 0;
+    }
+
+    .work-detail-page .frame .div-2 {
+        flex-direction: column;
+    }
+
+    .work-detail-page .frame .tsukareta-3,
+    .work-detail-page .frame .tsukareta-4 {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+    }
+}
+
